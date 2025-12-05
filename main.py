@@ -1,26 +1,38 @@
 #!/usr/bin/env python3
-import os
+from utls import *
+
+INVALID_PROJECT_DIR_ERROR = (
+    "Directory name must contain a '-' separating project and language, "
+    "e.g. 'codecrafters-sqlite-python'"
+)
+
+def detect_project_and_language():
+    project_name = detect_project_name().strip()
+
+    if "-" not in project_name:
+        raise ValueError(INVALID_PROJECT_DIR_ERROR)
+
+    cc_project, language = project_name.rsplit("-", 1)
+    cc_project = cc_project.strip()
+    language = language.strip()
+
+    if not cc_project:
+        raise ValueError("Project name is empty. " + INVALID_PROJECT_DIR_ERROR)
+    if not language:
+        raise ValueError("Language is empty. " + INVALID_PROJECT_DIR_ERROR)
+
+    return cc_project, language
+
 
 def main():
     print("=> welcome to the cli")
-
-
-def detect_project_and_language():
-    current_directory = os.getcwd()
-    project_name = os.path.basename(current_directory)
-    ccProject, language = project_name.rsplit("-", 1)
-    if not ccProject:
-        raise ValueError("Project name is empty")
-    if not language:
-        raise ValueError("Language is empty")
-    return ccProject, language
-
-
-
-if __name__ == "__main__":
     try:
-        project, language = detect_project_and_language()
-        print(project, language)
+        cc_project, language = detect_project_and_language()
+        print(cc_project, language)
     except ValueError as e:
         print(e)
         exit(1)
+
+
+if __name__ == "__main__":
+    main()
